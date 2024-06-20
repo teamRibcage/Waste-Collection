@@ -1,7 +1,0 @@
-{
-  "name": "Garbage Collection",
-  "zip_release": true,
-  "filename": "garbage_collection.zip",
-  "domains": ["sensor"],
-  "homeassistant": "2022.12.0b0"
-}
