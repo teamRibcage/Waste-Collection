@@ -1,16 +1,24 @@
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration) [![Garbage-Collection](https://img.shields.io/github/v/release/bruxy70/Garbage-Collection.svg?1)](https://github.com/bruxy70/Garbage-Collection) ![Maintenance](https://img.shields.io/maintenance/yes/2022.svg)
+[![Waste-Collection](https://img.shields.io/github/v/release/teamRibcage/Waste-Collection.svg?1)](https://github.com/teamRibcage/Waste-Collection) ![Maintenance](https://img.shields.io/maintenance/yes/2024.svg)
+</br>
+</br>
+# 🗑 &nbsp;Waste Collection ♻
 
-## End of Support
+The Waste Collection component is a HomeAssistant `helper` that creates a custom sensor for monitoring a regular waste collection schedule. The sensor can be configured for a number of different patterns:
 
-Home Assistant has introduced local calendars in 2022, in the 2023.1 release they added an option for different recurent events. With this, most of the functionality of this custom helper is supported natively. So I will end developing and supporting this helper in 2023.
+- `weekly` schedule (including multiple collection days, e.g. on Tuesday and Thursday)
+- `every-n-weeks` repeats every `period` of weeks, starting from the week number `first_week`. It uses the week number - therefore, it restarts each year, as the weeks start from number 1 each year.
+- bi-weekly in `even-weeks` or `odd-weeks` (technically, it is the same as every 2 weeks with 1<sup>st</sup> or 2<sup>nd</sup> `first_week`)
+- `every-n-days` (repeats regularly from the given first date). If n is a multiply of 7, it works similar to `every-n-weeks`, with the difference that it does not use the week numbers (that restart each year) but continues infinitely from the initial date.
+- `monthly` schedule (n<sup>th</sup> weekday each month), or a specific weekday of each n<sup>th</sup> week. Using the `period` it could also be every 2<sup>nd</sup>, 3<sup>rd</sup> etc month.
+- `annually` (e.g. birthdays). This is once per year. Using include dates, you can add additional dates manually.
+- `blank` does not automatically schedule any collections - to be used in cases where you want to make completely own schedule with `manual_update`.
+
+You can also configure seasonal calendars (e.g. for yard-waste collection), by configuring the first and last month.
+You could also `group` entities, which will merge multiple schedules into one sensor.
 
 ## Table of Contents
 
-- [Description](#garbage-collection)
 - [Installation](#installation)
-
-  - [Manual Installation](#manual-installation)
-  - [Installation via Home Assistant Community Store (HACS)](#installation-via-home-assistant-community-store-hacs)
 
 - [Configuration](#configuration)
 - [Blueprints for Manual Update](#blueprints-for-manual-update)
@@ -22,56 +30,29 @@ Home Assistant has introduced local calendars in 2022, in the 2023.1 release the
 - [State and Attributes](#state-and-attributes)
 - [Lovelace configuration examples](#lovelace-config-examples)
 
-# Garbage Collection
-
-The `garbage_collection` component is a Home Assistant helper that creates a custom sensor for monitoring a regular garbage collection schedule. The sensor can be configured for a number of different patterns:
-
-- `weekly` schedule (including multiple collection days, e.g. on Tuesday and Thursday)
-- `every-n-weeks` repeats every `period` of weeks, starting from the week number `first_week`. It uses the week number - therefore, it restarts each year, as the weeks start from number 1 each year.
-- bi-weekly in `even-weeks` or `odd-weeks` (technically, it is the same as every 2 weeks with 1<sup>st</sup> or 2<sup>nd</sup> `first_week`)
-- `every-n-days` (repeats regularly from the given first date). If n is a multiply of 7, it works similar to `every-n-weeks`, with the difference that it does not use the week numbers (that restart each year) but continues infinitely from the initial date.
-- `monthly` schedule (n<sup>th</sup> weekday each month), or a specific weekday of each n<sup>th</sup> week. Using the `period` it could also be every 2<sup>nd</sup>, 3<sup>rd</sup> etc month.
-- `annually` (e.g. birthdays). This is once per year. Using include dates, you can add additional dates manually.
-- `blank` does not automatically schedule any collections - to be used in cases where you want to make completely own schedule with `manual_update`.
-
-You can also configure seasonal calendars (e.g. for bio-waste collection), by configuring the first and last month.
-And you can `group` entities, which will merge multiple schedules into one sensor.
-
-These are some examples using this sensor. The Lovelace config examples are included below.
-<img src="https://github.com/bruxy70/Garbage-Collection/blob/master/images/picture-entity.png">
-
-<img src="https://github.com/bruxy70/Garbage-Collection/blob/master/images/entities.png">
-
-<img src="https://github.com/bruxy70/Garbage-Collection/blob/master/images/sensor.png">
-
-<img src="https://github.com/amaximus/garbage-collection-card/blob/master/garbage_collection_lovelace.jpg">
-
 ## Installation
 
 ### MANUAL INSTALLATION
 
 1. Download the
-   [latest release](https://github.com/bruxy70/garbage_collection/releases/latest).
-2. Unpack the release and copy the `custom_components/garbage_collection` directory
-   into the `custom_components` directory of your Home Assistant
+   [latest release](https://github.com/teamRibcage/waste_collection/releases/latest).
+2. Unpack the release and copy the `custom_components/waste_collection` directory
+   into the `custom_components` directory of your HomeAssistant
    installation.
-3. Restart Home Assistant.
-4. Configure the `garbage_collection` helper.
+3. Restart HomeAssistant.
+4. Configure the `waste_collection` helper.
 
-### INSTALLATION VIA Home Assistant Community Store (HACS)
 
-1. Ensure that [HACS](https://hacs.xyz/) is installed.
-2. Search for and install the "Garbage Collection" integration.
-3. Restart Home Assistant.
-4. Configure the `garbage_collection` helper.
 
 ## Configuration
 
-Go to `Settings`/`Devices & Services`/`Helpers`, click on the `+ CREATE HELPER` button, select `Garbage Collection` and configure the helper.<br />If you would like to add more than one collection schedule, click on the `+ CREATE HELPER` button again and add another `Garbage Collection` helper instance.
+- Go to <b>Settings</b> -> <b>Devices & Services</b> -> <b>Helpers</b>
+- Click on the `+ CREATE HELPER` button
+- Select `Waste Collection` and set the configuration options<br>
+If you would like to add more than one collection schedule, click on the `+ CREATE HELPER` button again and add another `Waste Collection` instance.
 
-**The configuration hapend in 2 steps.** In the first step, you select the `frequency` and common parameters. In the second step you configure additional parameters depending on the selected frequency.
+<b>The configuration happens in 2 steps.</b> In the first step, selections are made for `frequency` and other common parameters. In the second step, additional parameters are configured depending on the selected frequency.
 
-_The configuration via `configuration.yaml` has been deprecated. If you have previously configured the integration there, it will be imported to ConfigFlow, and you should remove it._
 
 ### STEP 1 - Common Parameters
 
